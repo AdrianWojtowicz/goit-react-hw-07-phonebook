@@ -1,10 +1,4 @@
-.section {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-}
-
-ul {
+li {
   list-style: circle;
 }
 
@@ -20,4 +14,5 @@ ul {
 .button:hover {
   background-color: #b2b2b2;
   color: white;
+  cursor: pointer;
 }

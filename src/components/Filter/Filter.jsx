@@ -1,17 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeFilter } from '../../redux/actions';
+import { filterContact } from '../../redux/actions';
 import styles from './Filter.module.css';
+import PropTypes from 'prop-types';
 
 const Filter = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(state => state.contacts.filter);
-  const onChange = e => dispatch(changeFilter(e.currentTarget.value));
+  const filter = useSelector(state => state.contactsReducer.filter);
+  const onChange = e => dispatch(filterContact(e));
 
   return (
     <div className={styles.section}>
       <label htmlFor="filter" >
-        <h2 className={styles.title}>Find contact by name</h2>
+        <h2 className={styles.title}>Find contact by name:</h2>
         <input
           type="text"
           name="filter"
@@ -26,3 +27,7 @@ const Filter = () => {
 }
 
 export default Filter
+
+Filter.propTypes = {
+  filter: PropTypes.string,
+}

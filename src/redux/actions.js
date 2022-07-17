@@ -1,12 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
-import { nanoid } from "nanoid";
+import { FILTER } from "./types";
 
-export const addContact = createAction('contact/Add', (name, number) => ({
-  payload: {
-    id: nanoid(5),
-    name,
-    number
-  },
+export const filterContact = createAction(FILTER, event => ({
+  payload: event.currentTarget.value,
 }))
-export const deleteContact = createAction('contact/delete')
-export const changeFilter = createAction('filter/change')

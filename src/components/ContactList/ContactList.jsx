@@ -1,50 +1,43 @@
 import React from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from '../../redux/actions';
-import styles from './ContactList.module.css';
+import { useSelector } from 'react-redux';
+import { useGetContactsQuery } from "api/contactsAPI";
 import PropTypes from 'prop-types';
+import Loader from 'components/Loader/Loader';
+import ContactListElement from './ContactListElement/ContactListElement';
 
 const ContactList = () => {
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.contacts.filter);
-  const dispatch = useDispatch();
-  const onDelete = id => dispatch(deleteContact(id));
-  function renderContactList() {
-    const filterLowered = filter.toLowerCase();
-    if (contacts) {
-      return contacts.filter(cont =>
-        cont.name.toLowerCase().includes(filterLowered)
-      );
-    }
-    return
-  }
-  const visibleContacts = renderContactList();
+  const filter = useSelector(state => state.contactsReducer.filter);
+  const { data: contacts, isFetching, isError } = useGetContactsQuery();
+  const filteredContacts = contacts && contacts.filter(contact => contact.name.toLowerCase().includes(filter));
+  const isContactsEmpty = filteredContacts && filteredContacts.length > 0;
+
   return (
-    <ul>
-      {visibleContacts.map(item => (
-        <li className={styles.list} key={item.id}>
-          {item.name}: {item.number}
-          <button
-            type="button"
-            className={styles.button}
-            onClick={() => onDelete(item.id)}>
-            Delete
-          </button>
-        </li>
-      ))}
-    </ul>
+    <>
+      {isFetching && <Loader color={'#3f51b5'} size={32} />}
+      {isError && console.log(isError)}
+      {isContactsEmpty ? (
+        <ul>
+          {filteredContacts.map(({ id, name, number }) => (
+            <ContactListElement key={id} id={id} name={name} number={number} />
+          ))}
+        </ul>
+      ) : (
+        <ul>
+          <p>The phonebook is empty...</p>
+        </ul>
+      )}
+    </>
   )
 }
 
 export default ContactList
 
 ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
+  filteredContacts: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
       number: PropTypes.string,
     })
-  ),
-  deleteContact: PropTypes.func
+  )
 }
